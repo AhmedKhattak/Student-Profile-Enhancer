@@ -17,7 +17,7 @@
             lockr.src = chrome.extension.getURL('lockr.js');
             document.head.appendChild(lockr);
             var script = document.createElement("script");
-            script.src = chrome.extension.getURL('fuck.js');
+            script.src = chrome.extension.getURL('luckyducky.js');
             document.head.appendChild(script);
             var script3 = document.createElement("link");
             script3.href = chrome.extension.getURL('custom.css');

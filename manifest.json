@@ -40,7 +40,7 @@
     ],
 
     "web_accessible_resources": [
-        "fuck.js",
+        "luckyducky.js",
         "jspdf.js",
         "custom.css",
         "download.js",
