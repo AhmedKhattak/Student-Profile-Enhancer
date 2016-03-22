@@ -1,0 +1,59 @@
+{
+    "manifest_version": 2,
+
+    "name": "Student Profile Enhancer",
+    "description": "Adds Extra Functionality to the Bahria Univeristy Islamabad Student Profile",
+    "version": "0.0.0.1",
+    "author": "Ahmed Rafiullah",
+    "homepage_url": "https://www.facebook.com/khattak.ahmed",
+    "options_page": "fancy-settings-master/source/index.html",
+
+    "icons": {
+        "128": "bu128.png"
+
+    },
+
+    "browser_action": {
+        "default_icon": "icon.png",
+        "default_popup": "popup.html"
+    },
+
+    "background": {
+        "page": "background.html"
+    },
+
+
+
+    "content_scripts": [{
+            "matches": ["http://111.68.99.8/StudentProfile/*", "http://111.68.108.69/*"],
+            "js": ["inject.js"],
+            "run_at": "document_start"
+        }
+
+    ],
+
+    "permissions": [
+        "storage",
+        "webRequest",
+        "http://111.68.99.8/*",
+        "http://111.68.108.69/*"
+    ],
+
+    "web_accessible_resources": [
+        "fuck.js",
+        "jspdf.js",
+        "custom.css",
+        "download.js",
+        "jquery-2.2.0.min.js",
+        "html2canvas.min.js",
+        "lockr.js",
+        "jspdf.min.js",
+        "jquery.tabletojson.js",
+        "xdLocalStorage.min.js",
+        "xdLocalStorageCallback.js",
+        "xdLocalStoragePostMessageApi.min.js",
+        "options.html",
+        "jquery.binarytransport.js"
+
+    ]
+}
