@@ -20,7 +20,7 @@ function getsitedata() {
                 localStorage.setItem('ectl00_Body_gvSP', ctl00_Body_gvSP);
                 localStorage.setItem('ectl00_Body_table', ctl00_Body_table);
                 console.log("--------------------------------------------------------");
-                console.log("have ExamSeatingPlan.aspx");
+                log("have ExamSeatingPlan.aspx", "success");
             } catch (e) {}
         }
     });
@@ -40,24 +40,33 @@ function getsitedata() {
         }
     });
 
-    // REGISTRATION TABLES
-    /*
+    // ATTENDENCE TABLES (in progress)
+
     $.ajax({
         url: "http://111.68.99.8/StudentProfile/Registration.aspx",
         success: function(result) {
             try {
                 document.getElementById("fack3").innerHTML = result;
-                var ctl00_Body_gvSP = document.getElementById('ctl00_Body_gvSP').outerHTML;
-                localStorage.setItem('ctl00_Body_gvSP', ctl00_Body_gvSP);
-                console.log("have REGISTRATION");
+                var test = document.getElementsByTagName('tr');
+                for (var i = test.length - 1; i >= 0; i--) {
+                    if (test[i].innerHTML.indexOf('<th scope="col">S#</th><th scope="col">Code</th><th scope="col">Registered Course Title</th><th scope="col">Credits</th><th scope="col">Offered Course Title</th><th scope="col">Class</th><th scope="col">Teacher</th><th scope="col">Fee</th><th scope="col">&nbsp;</th>') > -1) {
+                        if (test[i].parentNode.parentNode.parentNode.parentNode.nodeName == 'FIELDSET') {
+                            console.log(test[i].parentNode.parentNode.parentNode.parentNode.outerHTML);
+                        }
+                    }
+                }
+                log("have REGISTRATION", "success");
                 console.log("--------------------------------------------------------");
-            } catch (e) {}
+            } catch (e) {
+                console.error(e);
+            }
         }
     });
-    */
 
-    // PERSONAL INFO TABLES
-    /*  $.ajax({
+
+    /*
+    // PERSONAL INFO TABLES (may not do this since it contains personal stuff ?!)
+    $.ajax({
         url: "http://111.68.99.8/StudentProfile/PersonalInfo.aspx",
         success: function(result) {
             try {
@@ -69,7 +78,7 @@ function getsitedata() {
             } catch (e) {}
         }
     });
-    **/
+     */
 
     // TRANSCRIPT TABLES (done)
     $.ajax({
@@ -194,7 +203,7 @@ function log(msg, color) {
 
 // url : http://stackoverflow.com/posts/30407959/revisions
 
-//**dataurl to blob
+// **dataurl to blob**
 function dataURLtoBlob(dataurl) {
     var arr = dataurl.split(','),
         mime = arr[0].match(/:(.*?);/)[1],
