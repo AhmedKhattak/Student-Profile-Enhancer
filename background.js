@@ -19,8 +19,7 @@ function getsitedata() {
                 var ctl00_Body_gvSP = document.querySelector('.classone #ctl00_Body_gvSP').outerHTML;
                 localStorage.setItem('ectl00_Body_gvSP', ctl00_Body_gvSP);
                 localStorage.setItem('ectl00_Body_table', ctl00_Body_table);
-                console.log("--------------------------------------------------------");
-                log("have ExamSeatingPlan.aspx", "success");
+                log("SUCCESS : have ExamSeatingPlan.aspx", "success");
             } catch (e) {}
         }
     });
@@ -34,7 +33,6 @@ function getsitedata() {
                 document.getElementById("fack2").innerHTML = result;
                 var ctl00_Body_FEE_CHALAN = document.getElementById('ctl00_Body_FEE_CHALAN').outerHTML;
                 localStorage.setItem('ctl00_Body_FEE_CHALAN', ctl00_Body_FEE_CHALAN);
-                console.log("--------------------------------------------------------");
                 log("SUCCESS : have FeeChalans.aspx", "success");
             } catch (e) {}
         }
@@ -47,19 +45,17 @@ function getsitedata() {
         success: function(result) {
             try {
                 document.getElementById("fack3").innerHTML = result;
-                var test = document.getElementsByTagName('tr');
-                for (var i = test.length - 1; i >= 0; i--) {
-                    if (test[i].innerHTML.indexOf('<th scope="col">S#</th><th scope="col">Code</th><th scope="col">Registered Course Title</th><th scope="col">Credits</th><th scope="col">Offered Course Title</th><th scope="col">Class</th><th scope="col">Teacher</th><th scope="col">Fee</th><th scope="col">&nbsp;</th>') > -1) {
-                        if (test[i].parentNode.parentNode.parentNode.parentNode.nodeName == 'FIELDSET') {
-                            console.log(test[i].parentNode.parentNode.parentNode.parentNode.outerHTML);
+                var Registration_tables = document.getElementsByTagName('tr');
+                for (var i = 0; i < Registration_tables.length; i++) {
+                    if (Registration_tables[i].innerHTML.indexOf('<th scope="col">S#</th><th scope="col">Code</th><th scope="col">Registered Course Title</th><th scope="col">Credits</th><th scope="col">Offered Course Title</th><th scope="col">Class</th><th scope="col">Teacher</th><th scope="col">Fee</th><th scope="col">&nbsp;</th>') > -1) {
+                        if (Registration_tables[i].parentNode.parentNode.parentNode.parentNode.nodeName == 'FIELDSET') {
+                            localStorage.setItem('attendence100_table', Registration_tables[i].parentNode.parentNode.parentNode.parentNode.outerHTML);
+                            break;
                         }
                     }
                 }
-                log("have REGISTRATION", "success");
-                console.log("--------------------------------------------------------");
-            } catch (e) {
-                console.error(e);
-            }
+                log("SUCCESS : have Registration.aspx", "success");
+            } catch (e) {}
         }
     });
 
@@ -90,7 +86,6 @@ function getsitedata() {
                 var ct100_transcript = $("div[style=\"background-position: center top; width: 7.27in; margin: auto; background-image: url('App_Themes/Common/Images/NotForOfficialUse.png'); background-repeat: repeat-y;\"]")[0].outerHTML;
                 localStorage.setItem('ct100_transcript', ct100_transcript);
                 log("SUCCESS : have Transcript.aspx", "success");
-                console.log("--------------------------------------------------------");
             } catch (e) {}
         }
     });
@@ -107,10 +102,7 @@ function getsitedata() {
                 localStorage.setItem('ctl00_Body_gvResult', ctl00_Body_gvResult);
                 localStorage.setItem('ctl00_Body_table', ctl00_Body_table);
                 log("SUCCESS : have Result_Exam.aspx", "success");
-                console.log("--------------------------------------------------------");
-            } catch (e) {
-                console.log(e);
-            }
+            } catch (e) {}
         }
     });
 
@@ -126,10 +118,7 @@ function getsitedata() {
                 localStorage.setItem('rctl00_Body_gvResult', rctl00_Body_gvResult);
                 localStorage.setItem('rctl00_Body_table', rctl00_Body_table);
                 log("SUCCESS : have Result.aspx", "success");
-                console.log("--------------------------------------------------------");
-            } catch (e) {
-                console.log("error" + e);
-            }
+            } catch (e) {}
         }
     });
 
@@ -145,11 +134,7 @@ function getsitedata() {
                     localStorage.setItem('photo_100', dataurl);
                 });
                 log("SUCCESS : have Photo.aspx", "success");
-                console.log("--------------------------------------------------------");
-
-            } catch (e) {
-                console.log("error" + e);
-            }
+            } catch (e) {}
         }
     });
 }
@@ -218,7 +203,7 @@ function dataURLtoBlob(dataurl) {
     });
 }
 
-//**blob to dataURL**
+// **blob to dataURL**
 function blobToDataURL(blob, callback) {
     var a = new FileReader();
     a.onload = function(e) {
