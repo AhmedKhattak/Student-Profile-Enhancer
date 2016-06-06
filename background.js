@@ -7,10 +7,26 @@ function getsitedata() {
 
     console.clear();
     log("All the ERR_FILE_NOT_FOUND errors you see here are expected errors they can't be removed though", "info");
+    var one = GetExamSeatingPlanTables();
+    var two = GetResultTable();
+    var three = GetProvisionalResult();
+    var four = GetAttendanceTables();
+    var five = GetTranscriptTables();
+    var six = GetStudentProfilePhoto();
+    var seven = GetFeeChallanTables();
+
+    $.when(one, two, three, four, five, six, seven).done(function(res1, res2, res3, res4, res5, res6, res7) {
+        localStorage.setItem('zlast_updated', Date());
+        log("INFO : All Request Completed", "info");
+    });
+
+}
 
 
+
+function GetExamSeatingPlanTables() {
     // EXAM SEATING PLAN TABLES (done)
-    $.ajax({
+    return $.ajax({
         url: "http://111.68.99.8/StudentProfile/ExamSeatingPlan.aspx",
         success: function(result) {
             try {
@@ -23,10 +39,11 @@ function getsitedata() {
             } catch (e) {}
         }
     });
+}
 
-
+function GetFeeChallanTables() {
     // FEE CHALLAN TABLES (done)
-    $.ajax({
+    return $.ajax({
         url: "http://111.68.99.8/StudentProfile/FeeChalans.aspx",
         success: function(result) {
             try {
@@ -37,10 +54,66 @@ function getsitedata() {
             } catch (e) {}
         }
     });
+}
 
+function GetStudentProfilePhoto() {
+
+    // STUDENT PROFILE PHOTO (done)
+
+    return $.ajax({
+        url: "http://111.68.99.8/StudentProfile/Photo.ashx",
+        dataType: "binary",
+        processData: false,
+        success: function(result) {
+            try {
+                blobToDataURL(result, function(dataurl) {
+                    localStorage.setItem('photo_100', dataurl);
+                });
+                log("SUCCESS : have Photo.aspx", "success");
+            } catch (e) {}
+        }
+    });
+}
+
+function GetResultTable() {
+
+    // STANDARD RESULT TABLE (done)
+    return $.ajax({
+        url: "http://111.68.99.8/StudentProfile/Result.aspx",
+        success: function(result) {
+            try {
+                document.getElementById("fack7").innerHTML = result;
+                var rctl00_Body_table = document.querySelector('.classseven  #ctl00_Body_table').outerHTML;
+                var rctl00_Body_gvResult = document.querySelector('.classseven  #ctl00_Body_gvResult').outerHTML;
+                localStorage.setItem('rctl00_Body_gvResult', rctl00_Body_gvResult);
+                localStorage.setItem('rctl00_Body_table', rctl00_Body_table);
+                log("SUCCESS : have Result.aspx", "success");
+            } catch (e) {}
+        }
+    });
+}
+
+function GetProvisionalResult() {
+    // EXAM RESULT TABLES (done) (Provisional Semester Result Notification)
+    return $.ajax({
+        url: "http://111.68.99.8/StudentProfile/Result_Exam.aspx",
+        success: function(result) {
+            try {
+                document.getElementById("fack6").innerHTML = result;
+                var ctl00_Body_table = document.querySelector('.classsix  #ctl00_Body_table').outerHTML;
+                var ctl00_Body_gvResult = document.querySelector('.classsix  #ctl00_Body_gvResult').outerHTML;
+                localStorage.setItem('ctl00_Body_gvResult', ctl00_Body_gvResult);
+                localStorage.setItem('ctl00_Body_table', ctl00_Body_table);
+                log("SUCCESS : have Result_Exam.aspx", "success");
+            } catch (e) {}
+        }
+    });
+}
+
+function GetAttendanceTables() {
     // ATTENDENCE TABLES (in progress)
 
-    $.ajax({
+    return $.ajax({
         url: "http://111.68.99.8/StudentProfile/Registration.aspx",
         success: function(result) {
             try {
@@ -58,11 +131,29 @@ function getsitedata() {
             } catch (e) {}
         }
     });
+}
+
+function GetTranscriptTables() {
+    // TRANSCRIPT TABLES (done)
+    return $.ajax({
+        url: "http://111.68.99.8/StudentProfile/Transcript.aspx",
+        success: function(result) {
+            try {
+                document.getElementById("fack5").innerHTML = result;
+                //get the div which has the 'for official use only' background pic that div contains all the required tables
+                var ct100_transcript = $("div[style=\"background-position: center top; width: 7.27in; margin: auto; background-image: url('App_Themes/Common/Images/NotForOfficialUse.png'); background-repeat: repeat-y;\"]")[0].outerHTML;
+                localStorage.setItem('ct100_transcript', ct100_transcript);
+                log("SUCCESS : have Transcript.aspx", "success");
+            } catch (e) {}
+        }
+    });
+}
 
 
+function GetPersonalInfoTables() {
     /*
     // PERSONAL INFO TABLES (may not do this since it contains personal stuff ?!)
-    $.ajax({
+   return $.ajax({
         url: "http://111.68.99.8/StudentProfile/PersonalInfo.aspx",
         success: function(result) {
             try {
@@ -75,71 +166,7 @@ function getsitedata() {
         }
     });
      */
-
-    // TRANSCRIPT TABLES (done)
-    $.ajax({
-        url: "http://111.68.99.8/StudentProfile/Transcript.aspx",
-        success: function(result) {
-            try {
-                document.getElementById("fack5").innerHTML = result;
-                //get the div which has the 'for official use only' background pic that div contains all the required tables
-                var ct100_transcript = $("div[style=\"background-position: center top; width: 7.27in; margin: auto; background-image: url('App_Themes/Common/Images/NotForOfficialUse.png'); background-repeat: repeat-y;\"]")[0].outerHTML;
-                localStorage.setItem('ct100_transcript', ct100_transcript);
-                log("SUCCESS : have Transcript.aspx", "success");
-            } catch (e) {}
-        }
-    });
-
-
-    // EXAM RESULT TABLES (done) (Provisional Semester Result Notification)
-    $.ajax({
-        url: "http://111.68.99.8/StudentProfile/Result_Exam.aspx",
-        success: function(result) {
-            try {
-                document.getElementById("fack6").innerHTML = result;
-                var ctl00_Body_table = document.querySelector('.classsix  #ctl00_Body_table').outerHTML;
-                var ctl00_Body_gvResult = document.querySelector('.classsix  #ctl00_Body_gvResult').outerHTML;
-                localStorage.setItem('ctl00_Body_gvResult', ctl00_Body_gvResult);
-                localStorage.setItem('ctl00_Body_table', ctl00_Body_table);
-                log("SUCCESS : have Result_Exam.aspx", "success");
-            } catch (e) {}
-        }
-    });
-
-
-    // STANDARD RESULT PAGE (done)
-    $.ajax({
-        url: "http://111.68.99.8/StudentProfile/Result.aspx",
-        success: function(result) {
-            try {
-                document.getElementById("fack7").innerHTML = result;
-                var rctl00_Body_table = document.querySelector('.classseven  #ctl00_Body_table').outerHTML;
-                var rctl00_Body_gvResult = document.querySelector('.classseven  #ctl00_Body_gvResult').outerHTML;
-                localStorage.setItem('rctl00_Body_gvResult', rctl00_Body_gvResult);
-                localStorage.setItem('rctl00_Body_table', rctl00_Body_table);
-                log("SUCCESS : have Result.aspx", "success");
-            } catch (e) {}
-        }
-    });
-
-    // STUDENT PROFILE PHOTO (done)
-
-    $.ajax({
-        url: "http://111.68.99.8/StudentProfile/Photo.ashx",
-        dataType: "binary",
-        processData: false,
-        success: function(result) {
-            try {
-                blobToDataURL(result, function(dataurl) {
-                    localStorage.setItem('photo_100', dataurl);
-                });
-                log("SUCCESS : have Photo.aspx", "success");
-            } catch (e) {}
-        }
-    });
 }
-
-
 
 // logging helper function
 // credits: http://stackoverflow.com/posts/25042340/revisions

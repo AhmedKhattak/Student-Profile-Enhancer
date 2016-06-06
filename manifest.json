@@ -6,7 +6,6 @@
     "version": "0.0.0.1",
     "author": "Ahmed Rafiullah",
     "homepage_url": "https://www.facebook.com/khattak.ahmed",
-    "options_page": "fancy-settings-master/source/index.html",
 
     "icons": {
         "128": "bu128.png"
