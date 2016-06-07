@@ -2,22 +2,58 @@
 //it means you can send cookies along with ajax requests and dont have to worry about cross domain calls !
 
 
+var site = "http://111.68.99.8/StudentProfile/"
+
 // Gets all the relevant data from the site 
 function getsitedata() {
 
     console.clear();
-    log("All the ERR_FILE_NOT_FOUND errors you see here are expected errors they can't be removed though", "info");
     var one = GetExamSeatingPlanTables();
     var two = GetResultTable();
     var three = GetProvisionalResult();
-    var four = GetAttendanceTables();
+    var four = GetFeeChallanTables();
     var five = GetTranscriptTables();
     var six = GetStudentProfilePhoto();
-    var seven = GetFeeChallanTables();
-
-    $.when(one, two, three, four, five, six, seven).done(function(res1, res2, res3, res4, res5, res6, res7) {
+    var seven = GetAttendanceTables();
+    log("Rquests Sent", "info");
+    //chaining multiple ajax calls to get all site data and then update the local storage with new data
+    //the updates are done in the calls each sucessful call is handeld individually
+    $.when(one, two, three, four, five, six, seven).then(function(res1, res2, res3, res4, res5, res6, res7) {
+        //on success of all calls
+    }, function(res1, res2, res3, res4, res5, res6, res7) {
+        //on failure of any calls
+        log("ERROR : One or more requests failed", "error");
+    }).then(function() {
+        //new call when all above calls are succesfull
+        //loop through each link and call the ajax and store deffered objects in array and return the array
+        //for next 'then'
+        var table = $('#AttendenceTable_100').tableToJSON({
+            allowHTML: true
+        }); // Convert the table into a javascript object
+        var results = [];
+        for (var key in table) {
+            if (table.hasOwnProperty(key)) {
+                try {
+                    if ($(table[key]["&nbsp;"]).attr('href') != '&nbsp;') {
+                        var url = site.concat($(table[key]["&nbsp;"]).attr('href'));
+                        results.push(GetClassAttendences(url));
+                        console.log(url);
+                    }
+                } catch (e) {}
+            }
+        }
+        return results;
+    }).then(function(res) {
+        console.log(res);
+        //action todo when above call is sucessful
+        //data will be handled here instead of seperate function how to do it in a better way ?
         localStorage.setItem('zlast_updated', Date());
         log("INFO : All Request Completed", "info");
+
+    }, function() {
+        //action todo when  call is failed
+        console.log("fuck");
+
     });
 
 }
@@ -122,6 +158,7 @@ function GetAttendanceTables() {
                 for (var i = 0; i < Registration_tables.length; i++) {
                     if (Registration_tables[i].innerHTML.indexOf('<th scope="col">S#</th><th scope="col">Code</th><th scope="col">Registered Course Title</th><th scope="col">Credits</th><th scope="col">Offered Course Title</th><th scope="col">Class</th><th scope="col">Teacher</th><th scope="col">Fee</th><th scope="col">&nbsp;</th>') > -1) {
                         if (Registration_tables[i].parentNode.parentNode.parentNode.parentNode.nodeName == 'FIELDSET') {
+                            $(Registration_tables[i].parentNode.parentNode).attr("id", "AttendenceTable_100"); //changed id so its easier to find next time !
                             localStorage.setItem('attendence100_table', Registration_tables[i].parentNode.parentNode.parentNode.parentNode.outerHTML);
                             break;
                         }
@@ -149,6 +186,16 @@ function GetTranscriptTables() {
     });
 }
 
+function GetClassAttendences(urlEndpoint) {
+    //only make calls but do not handle them here
+    return $.ajax({
+        url: urlEndpoint
+    });
+
+
+
+}
+
 
 function GetPersonalInfoTables() {
     /*
@@ -169,7 +216,7 @@ function GetPersonalInfoTables() {
 }
 
 // logging helper function
-// credits: http://stackoverflow.com/posts/25042340/revisions
+// url: http://stackoverflow.com/posts/25042340/revisions
 function log(msg, color) {
     color = color || "black";
     bgc = "White";
