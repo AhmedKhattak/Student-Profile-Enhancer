@@ -12,6 +12,41 @@ var final = {
 
 watch(final, ["done1", "done2"], function() {
     if (final.done1 === 1 && final.done2 === 1) {
+        //actually commit all data to real keys other keys are just temps if any one 
+        //of the calls does not succeed all of them are considered to be failed
+        //so use real keys only which have all the data though it may not be latest
+        //here fail means the call could not be completed data can be null it will be handled later
+
+        //examseating plans
+        localStorage.setItem('real_ectl00_Body_gvSP', localStorage.getItem('temp_ectl00_Body_gvSP'));
+        localStorage.setItem('real_ectl00_Body_table', localStorage.getItem('temp_ectl00_Body_table'));
+
+        //fee challan tables
+        localStorage.setItem('real_ctl00_Body_FEE_CHALAN', localStorage.getItem('temp_ctl00_Body_FEE_CHALAN'));
+
+        //resut tables
+        localStorage.setItem('real_rctl00_Body_gvResult', localStorage.getItem('temp_rctl00_Body_gvResult'));
+        localStorage.setItem('real_rctl00_Body_table', localStorage.getItem('temp_rctl00_Body_table'));
+
+        //provisonal result
+        localStorage.setItem('real_ctl00_Body_gvResult', localStorage.getItem('temp_ctl00_Body_gvResult'));
+        localStorage.setItem('real_ctl00_Body_table', localStorage.getItem('temp_ctl00_Body_table'));
+
+        //attendence table
+        localStorage.setItem('real_attendence100_table', localStorage.getItem('temp_attendence100_table'));
+
+        //transcript table
+        localStorage.setItem('real_ct100_transcript', localStorage.getItem('temp_ct100_transcript'));
+
+        //photo
+        localStorage.setItem('real_photo_100', localStorage.getItem('temp_photo_100'));
+
+        //attendeces
+        localStorage.setItem('real_attendeces', localStorage.getItem('temp_attendeces'));
+
+        console.log(JSON.parse(localStorage.getItem('temp_attendeces')));
+
+
         localStorage.setItem('zlast_updated', Date());
         log("INFO : All requests completed", "info");
     }
@@ -30,8 +65,7 @@ watch(ex1, "attr1", function() {
 
     if (ex1.attr1 === 1) {
         //new call when all above calls are succesfull
-        //loop through each link and call the ajax and store deffered objects in array and return the array
-        //for next 'then'
+        //loop through each link and call the ajax and store deffered objects in array
         var table = $('#AttendenceTable_100').tableToJSON({
             allowHTML: true
         }); // Convert the table into a javascript object
@@ -47,17 +81,26 @@ watch(ex1, "attr1", function() {
                 } catch (e) {}
             }
         }
+        var objarr = [];
         $.when.apply($, results).then(function(res) {
-            for (var i = 0; i < arguments.length; i++) {
-                console.log(arguments[i]);
+                for (var i = 0; i < arguments.length; i++) {
+                    //here data will be extracted and stored
+                    var el = document.createElement('html');
+                    el.innerHTML = arguments[i][0];
+                    //make object and json it and the store in local storage
+                    objarr.push({
+                        name: $($('table.Table.Left td', el)[3].innerHTML).html(),
+                        table: $('table.Table.Left', el)[0].outerHTML,
+                        data: $('table#ctl00_Body_ATTENDANCE.FullWidth.gv', el)[0].outerHTML
+                    });
 
-            }
-
-            final.done2 = 1;
-
-        }, function(res) {
-            log("ERROR : One or more requests failed", "error");
-        });
+                }
+                localStorage.setItem('temp_attendeces', JSON.stringify(objarr));
+                final.done2 = 1;
+            },
+            function(res) {
+                log("ERROR : One or more requests failed", "error");
+            });
     } else {
         console.log("reset attr1 ");
     }
@@ -101,8 +144,8 @@ function GetExamSeatingPlanTables() {
                 document.getElementById("fack1").innerHTML = result;
                 var ctl00_Body_table = document.querySelector('.classone #ctl00_Body_table').outerHTML;
                 var ctl00_Body_gvSP = document.querySelector('.classone #ctl00_Body_gvSP').outerHTML;
-                localStorage.setItem('ectl00_Body_gvSP', ctl00_Body_gvSP);
-                localStorage.setItem('ectl00_Body_table', ctl00_Body_table);
+                localStorage.setItem('temp_ectl00_Body_gvSP', ctl00_Body_gvSP);
+                localStorage.setItem('temp_ectl00_Body_table', ctl00_Body_table);
                 log("SUCCESS : have ExamSeatingPlan.aspx", "success");
             } catch (e) {}
         }
@@ -117,7 +160,7 @@ function GetFeeChallanTables() {
             try {
                 document.getElementById("fack2").innerHTML = result;
                 var ctl00_Body_FEE_CHALAN = document.getElementById('ctl00_Body_FEE_CHALAN').outerHTML;
-                localStorage.setItem('ctl00_Body_FEE_CHALAN', ctl00_Body_FEE_CHALAN);
+                localStorage.setItem('temp_ctl00_Body_FEE_CHALAN', ctl00_Body_FEE_CHALAN);
                 log("SUCCESS : have FeeChalans.aspx", "success");
             } catch (e) {}
         }
@@ -135,7 +178,7 @@ function GetStudentProfilePhoto() {
         success: function(result) {
             try {
                 blobToDataURL(result, function(dataurl) {
-                    localStorage.setItem('photo_100', dataurl);
+                    localStorage.setItem('temp_photo_100', dataurl);
                 });
                 log("SUCCESS : have Photo.aspx", "success");
             } catch (e) {}
@@ -153,8 +196,8 @@ function GetResultTable() {
                 document.getElementById("fack7").innerHTML = result;
                 var rctl00_Body_table = document.querySelector('.classseven  #ctl00_Body_table').outerHTML;
                 var rctl00_Body_gvResult = document.querySelector('.classseven  #ctl00_Body_gvResult').outerHTML;
-                localStorage.setItem('rctl00_Body_gvResult', rctl00_Body_gvResult);
-                localStorage.setItem('rctl00_Body_table', rctl00_Body_table);
+                localStorage.setItem('temp_rctl00_Body_gvResult', rctl00_Body_gvResult);
+                localStorage.setItem('temp_rctl00_Body_table', rctl00_Body_table);
                 log("SUCCESS : have Result.aspx", "success");
             } catch (e) {}
         }
@@ -170,8 +213,8 @@ function GetProvisionalResult() {
                 document.getElementById("fack6").innerHTML = result;
                 var ctl00_Body_table = document.querySelector('.classsix  #ctl00_Body_table').outerHTML;
                 var ctl00_Body_gvResult = document.querySelector('.classsix  #ctl00_Body_gvResult').outerHTML;
-                localStorage.setItem('ctl00_Body_gvResult', ctl00_Body_gvResult);
-                localStorage.setItem('ctl00_Body_table', ctl00_Body_table);
+                localStorage.setItem('temp_ctl00_Body_gvResult', ctl00_Body_gvResult);
+                localStorage.setItem('temp_ctl00_Body_table', ctl00_Body_table);
                 log("SUCCESS : have Result_Exam.aspx", "success");
             } catch (e) {}
         }
@@ -191,7 +234,7 @@ function GetAttendanceTables() {
                     if (Registration_tables[i].innerHTML.indexOf('<th scope="col">S#</th><th scope="col">Code</th><th scope="col">Registered Course Title</th><th scope="col">Credits</th><th scope="col">Offered Course Title</th><th scope="col">Class</th><th scope="col">Teacher</th><th scope="col">Fee</th><th scope="col">&nbsp;</th>') > -1) {
                         if (Registration_tables[i].parentNode.parentNode.parentNode.parentNode.nodeName == 'FIELDSET') {
                             $(Registration_tables[i].parentNode.parentNode).attr("id", "AttendenceTable_100"); //changed id so its easier to find next time !
-                            localStorage.setItem('attendence100_table', Registration_tables[i].parentNode.parentNode.parentNode.parentNode.outerHTML);
+                            localStorage.setItem('temp_attendence100_table', Registration_tables[i].parentNode.parentNode.parentNode.parentNode.outerHTML);
                             ex1.attr1 = 1;
                             break;
                         }
@@ -212,7 +255,7 @@ function GetTranscriptTables() {
                 document.getElementById("fack5").innerHTML = result;
                 //get the div which has the 'for official use only' background pic that div contains all the required tables
                 var ct100_transcript = $("div[style=\"background-position: center top; width: 7.27in; margin: auto; background-image: url('App_Themes/Common/Images/NotForOfficialUse.png'); background-repeat: repeat-y;\"]")[0].outerHTML;
-                localStorage.setItem('ct100_transcript', ct100_transcript);
+                localStorage.setItem('temp_ct100_transcript', ct100_transcript);
                 log("SUCCESS : have Transcript.aspx", "success");
             } catch (e) {}
         }
