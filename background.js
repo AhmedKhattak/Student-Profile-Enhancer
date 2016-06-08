@@ -2,28 +2,33 @@
 //it means you can send cookies along with ajax requests and dont have to worry about cross domain calls !
 
 
-var site = "http://111.68.99.8/StudentProfile/"
+var site = "http://111.68.99.8/StudentProfile/";
 
-// Gets all the relevant data from the site 
-function getsitedata() {
 
-    console.clear();
-    var one = GetExamSeatingPlanTables();
-    var two = GetResultTable();
-    var three = GetProvisionalResult();
-    var four = GetFeeChallanTables();
-    var five = GetTranscriptTables();
-    var six = GetStudentProfilePhoto();
-    var seven = GetAttendanceTables();
-    log("Rquests Sent", "info");
-    //chaining multiple ajax calls to get all site data and then update the local storage with new data
-    //the updates are done in the calls each sucessful call is handeld individually
-    $.when(one, two, three, four, five, six, seven).then(function(res1, res2, res3, res4, res5, res6, res7) {
-        //on success of all calls
-    }, function(res1, res2, res3, res4, res5, res6, res7) {
-        //on failure of any calls
-        log("ERROR : One or more requests failed", "error");
-    }).then(function() {
+var final = {
+    done1: 0,
+    done2: 0
+};
+
+watch(final, ["done1", "done2"], function() {
+    if (final.done1 === 1 && final.done2 === 1) {
+        localStorage.setItem('zlast_updated', Date());
+        log("INFO : All requests completed", "info");
+    }
+    if (final.done1 === 0 && final.done2 === 0) {
+        console.log("reset done1 and done2 ");
+    }
+});
+
+
+var ex1 = {
+    attr1: 0
+};
+
+//defining a 'watcher' for an attribute
+watch(ex1, "attr1", function() {
+
+    if (ex1.attr1 === 1) {
         //new call when all above calls are succesfull
         //loop through each link and call the ajax and store deffered objects in array and return the array
         //for next 'then'
@@ -42,18 +47,45 @@ function getsitedata() {
                 } catch (e) {}
             }
         }
-        return results;
-    }).then(function(res) {
-        console.log(res);
-        //action todo when above call is sucessful
-        //data will be handled here instead of seperate function how to do it in a better way ?
-        localStorage.setItem('zlast_updated', Date());
-        log("INFO : All Request Completed", "info");
+        $.when.apply($, results).then(function(res) {
+            for (var i = 0; i < arguments.length; i++) {
+                console.log(arguments[i]);
 
-    }, function() {
-        //action todo when  call is failed
-        console.log("fuck");
+            }
 
+            final.done2 = 1;
+
+        }, function(res) {
+            log("ERROR : One or more requests failed", "error");
+        });
+    } else {
+        console.log("reset attr1 ");
+    }
+});
+
+// Gets all the relevant data from the site 
+function getsitedata() {
+
+    ex1.attr1 = 0;
+    final.done1 = 0;
+    final.done2 = 0;
+    console.clear();
+    var one = GetExamSeatingPlanTables();
+    var two = GetResultTable();
+    var three = GetProvisionalResult();
+    var four = GetFeeChallanTables();
+    var five = GetTranscriptTables();
+    var six = GetStudentProfilePhoto();
+    var seven = GetAttendanceTables();
+    log("Rquests Sent", "info");
+    //chaining multiple ajax calls to get all site data and then update the local storage with new data
+    //the updates are done in the calls each sucessful call is handeld individually
+    $.when(one, two, three, four, five, six, seven).then(function(res1, res2, res3, res4, res5, res6, res7) {
+        //on success of all calls
+        final.done1 = 1;
+    }, function(res1, res2, res3, res4, res5, res6, res7) {
+        //on failure of any calls
+        log("ERROR : One or more requests failed", "error");
     });
 
 }
@@ -160,6 +192,7 @@ function GetAttendanceTables() {
                         if (Registration_tables[i].parentNode.parentNode.parentNode.parentNode.nodeName == 'FIELDSET') {
                             $(Registration_tables[i].parentNode.parentNode).attr("id", "AttendenceTable_100"); //changed id so its easier to find next time !
                             localStorage.setItem('attendence100_table', Registration_tables[i].parentNode.parentNode.parentNode.parentNode.outerHTML);
+                            ex1.attr1 = 1;
                             break;
                         }
                     }
