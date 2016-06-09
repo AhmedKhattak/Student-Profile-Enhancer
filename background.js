@@ -17,38 +17,25 @@ watch(final, ["done1", "done2"], function() {
         //so use real keys only which have all the data though it may not be latest
         //here fail means the call could not be completed data can be null it will be handled later
 
-        //examseating plans
-        localStorage.setItem('real_ectl00_Body_gvSP', localStorage.getItem('temp_ectl00_Body_gvSP'));
-        localStorage.setItem('real_ectl00_Body_table', localStorage.getItem('temp_ectl00_Body_table'));
 
-        //fee challan tables
-        localStorage.setItem('real_ctl00_Body_FEE_CHALAN', localStorage.getItem('temp_ctl00_Body_FEE_CHALAN'));
-
-        //resut tables
-        localStorage.setItem('real_rctl00_Body_gvResult', localStorage.getItem('temp_rctl00_Body_gvResult'));
-        localStorage.setItem('real_rctl00_Body_table', localStorage.getItem('temp_rctl00_Body_table'));
-
-        //provisonal result
-        localStorage.setItem('real_ctl00_Body_gvResult', localStorage.getItem('temp_ctl00_Body_gvResult'));
-        localStorage.setItem('real_ctl00_Body_table', localStorage.getItem('temp_ctl00_Body_table'));
-
-        //attendence table
-        localStorage.setItem('real_attendence100_table', localStorage.getItem('temp_attendence100_table'));
-
-        //transcript table
-        localStorage.setItem('real_ct100_transcript', localStorage.getItem('temp_ct100_transcript'));
 
         //photo
         localStorage.setItem('real_photo_100', localStorage.getItem('temp_photo_100'));
-
-        //attendeces
-        localStorage.setItem('real_attendeces', localStorage.getItem('temp_attendeces'));
-
-        console.log(JSON.parse(localStorage.getItem('temp_attendeces')));
-
-
+        localStorage.setItem('real_FeeChalans', localStorage.getItem('temp_FeeChalans'));
+        localStorage.setItem('real_Result_Exam', localStorage.getItem('temp_Result_Exam'));
+        localStorage.setItem('real_Result', localStorage.getItem('temp_Result'));
+        localStorage.setItem('real_Registration', localStorage.getItem('temp_Registration'));
+        localStorage.setItem('real_Transcript', localStorage.getItem('temp_Transcript'));
+        localStorage.setItem('real_ExamSeatingPlan', localStorage.getItem('temp_ExamSeatingPlan'));
+        localStorage.setItem('real_Home', localStorage.getItem('temp_Home'));
         localStorage.setItem('zlast_updated', Date());
         log("INFO : All requests completed", "info");
+        var t = 0;
+        for (var x in localStorage) {
+            t += (((localStorage[x].length * 2)));
+        }
+        console.log(t / 1024 + " KB");
+        console.log(JSON.parse(localStorage.getItem('temp_attendeces')));
     }
     if (final.done1 === 0 && final.done2 === 0) {
         console.log("reset done1 and done2 ");
@@ -90,8 +77,7 @@ watch(ex1, "attr1", function() {
                     //make object and json it and the store in local storage
                     objarr.push({
                         name: $($('table.Table.Left td', el)[3].innerHTML).html(),
-                        table: $('table.Table.Left', el)[0].outerHTML,
-                        data: $('table#ctl00_Body_ATTENDANCE.FullWidth.gv', el)[0].outerHTML
+                        data: arguments[i][0]
                     });
 
                 }
@@ -120,19 +106,34 @@ function getsitedata() {
     var five = GetTranscriptTables();
     var six = GetStudentProfilePhoto();
     var seven = GetAttendanceTables();
+    var eight = GetHomePage();
     log("Rquests Sent", "info");
     //chaining multiple ajax calls to get all site data and then update the local storage with new data
     //the updates are done in the calls each sucessful call is handeld individually
-    $.when(one, two, three, four, five, six, seven).then(function(res1, res2, res3, res4, res5, res6, res7) {
+    $.when(one, two, three, four, five, six, seven, eight).then(function(res1, res2, res3, res4, res5, res6, res7, res8) {
         //on success of all calls
         final.done1 = 1;
-    }, function(res1, res2, res3, res4, res5, res6, res7) {
+    }, function(res1, res2, res3, res4, res5, res6, res7, res8) {
         //on failure of any calls
         log("ERROR : One or more requests failed", "error");
     });
 
 }
 
+
+function GetHomePage() {
+    return $.ajax({
+        url: "http://111.68.99.8/StudentProfile/Home.aspx",
+        success: function(result) {
+            try {
+                //document.getElementById("fack1").innerHTML = result;
+                localStorage.setItem('temp_Home', result);
+                log("SUCCESS : have Home.aspx", "success");
+            } catch (e) {}
+        }
+    });
+
+}
 
 
 function GetExamSeatingPlanTables() {
@@ -141,11 +142,8 @@ function GetExamSeatingPlanTables() {
         url: "http://111.68.99.8/StudentProfile/ExamSeatingPlan.aspx",
         success: function(result) {
             try {
-                document.getElementById("fack1").innerHTML = result;
-                var ctl00_Body_table = document.querySelector('.classone #ctl00_Body_table').outerHTML;
-                var ctl00_Body_gvSP = document.querySelector('.classone #ctl00_Body_gvSP').outerHTML;
-                localStorage.setItem('temp_ectl00_Body_gvSP', ctl00_Body_gvSP);
-                localStorage.setItem('temp_ectl00_Body_table', ctl00_Body_table);
+                //document.getElementById("fack1").innerHTML = result;
+                localStorage.setItem('temp_ExamSeatingPlan', result);
                 log("SUCCESS : have ExamSeatingPlan.aspx", "success");
             } catch (e) {}
         }
@@ -158,9 +156,8 @@ function GetFeeChallanTables() {
         url: "http://111.68.99.8/StudentProfile/FeeChalans.aspx",
         success: function(result) {
             try {
-                document.getElementById("fack2").innerHTML = result;
-                var ctl00_Body_FEE_CHALAN = document.getElementById('ctl00_Body_FEE_CHALAN').outerHTML;
-                localStorage.setItem('temp_ctl00_Body_FEE_CHALAN', ctl00_Body_FEE_CHALAN);
+                //document.getElementById("fack2").innerHTML = result;
+                localStorage.setItem('temp_FeeChalans', result);
                 log("SUCCESS : have FeeChalans.aspx", "success");
             } catch (e) {}
         }
@@ -193,11 +190,8 @@ function GetResultTable() {
         url: "http://111.68.99.8/StudentProfile/Result.aspx",
         success: function(result) {
             try {
-                document.getElementById("fack7").innerHTML = result;
-                var rctl00_Body_table = document.querySelector('.classseven  #ctl00_Body_table').outerHTML;
-                var rctl00_Body_gvResult = document.querySelector('.classseven  #ctl00_Body_gvResult').outerHTML;
-                localStorage.setItem('temp_rctl00_Body_gvResult', rctl00_Body_gvResult);
-                localStorage.setItem('temp_rctl00_Body_table', rctl00_Body_table);
+                //document.getElementById("fack7").innerHTML = result;
+                localStorage.setItem('temp_Result', result);
                 log("SUCCESS : have Result.aspx", "success");
             } catch (e) {}
         }
@@ -210,11 +204,8 @@ function GetProvisionalResult() {
         url: "http://111.68.99.8/StudentProfile/Result_Exam.aspx",
         success: function(result) {
             try {
-                document.getElementById("fack6").innerHTML = result;
-                var ctl00_Body_table = document.querySelector('.classsix  #ctl00_Body_table').outerHTML;
-                var ctl00_Body_gvResult = document.querySelector('.classsix  #ctl00_Body_gvResult').outerHTML;
-                localStorage.setItem('temp_ctl00_Body_gvResult', ctl00_Body_gvResult);
-                localStorage.setItem('temp_ctl00_Body_table', ctl00_Body_table);
+                //document.getElementById("fack6").innerHTML = result;
+                localStorage.setItem('temp_Result_Exam', result);
                 log("SUCCESS : have Result_Exam.aspx", "success");
             } catch (e) {}
         }
@@ -240,6 +231,7 @@ function GetAttendanceTables() {
                         }
                     }
                 }
+                localStorage.setItem('temp_Registration', result);
                 log("SUCCESS : have Registration.aspx", "success");
             } catch (e) {}
         }
@@ -252,10 +244,9 @@ function GetTranscriptTables() {
         url: "http://111.68.99.8/StudentProfile/Transcript.aspx",
         success: function(result) {
             try {
-                document.getElementById("fack5").innerHTML = result;
+                //document.getElementById("fack5").innerHTML = result;
                 //get the div which has the 'for official use only' background pic that div contains all the required tables
-                var ct100_transcript = $("div[style=\"background-position: center top; width: 7.27in; margin: auto; background-image: url('App_Themes/Common/Images/NotForOfficialUse.png'); background-repeat: repeat-y;\"]")[0].outerHTML;
-                localStorage.setItem('temp_ct100_transcript', ct100_transcript);
+                localStorage.setItem('temp_Transcript', result);
                 log("SUCCESS : have Transcript.aspx", "success");
             } catch (e) {}
         }
