@@ -39,3 +39,5 @@ textarea { resize: none; }
 .SortDesc { background-image: url('Images/desc.png'); background-repeat: no-repeat; background-position: right center; padding-right: 18px; }
 div legend { font-weight: bold; color: #0000FF; }
 .PadR2 { padding-right: 2px; }
+#ctl00_QAHomeHL:hover { cursor: default; background-color: none; }
+#ctl00_PersonalInfoHL:hover { cursor: default; background-color: none; }
