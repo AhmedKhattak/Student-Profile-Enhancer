@@ -282,6 +282,13 @@ function GetPersonalInfoTables() {
      */
 }
 
+
+//calls getsitedata whenever the user logs in sucessfully to the real site
+chrome.runtime.onMessage.addListener(function(response, sender, sendResponse) {
+    alert(response);
+});
+
+
 // logging helper function
 // url: http://stackoverflow.com/posts/25042340/revisions
 function log(msg, color) {
