@@ -5,7 +5,7 @@
     "description": "Adds Extra Functionality to the Bahria Univeristy Islamabad Student Profile",
     "version": "0.0.0.1",
     "author": "Ahmed Rafiullah",
-    "homepage_url": "https://www.facebook.com/khattak.ahmed",
+    "homepage_url": "https://chrome.google.com/webstore/detail/student-profile-enhancer/picjmnkcgjpeendndabkppljpomobona",
 
     "icons": {
         "128": "bu128.png"
@@ -14,7 +14,7 @@
 
     "browser_action": {
         "default_icon": "icon.png",
-        "default_popup": "popup.html"
+        "default_popup": "popup/popup.html"
     },
 
     "background": {
@@ -25,9 +25,11 @@
 
     "content_scripts": [{
             "matches": ["http://111.68.99.8/StudentProfile/*", "http://111.68.108.69/*"],
-            "js": ["inject.js"],
+            "js": ["global-scripts/inject.js"],
             "run_at": "document_start"
         }
+
+
 
     ],
 
@@ -39,20 +41,16 @@
     ],
 
     "web_accessible_resources": [
-        "luckyducky.js",
-        "jspdf.js",
-        "custom.css",
-        "download.js",
-        "jquery-2.2.0.min.js",
-        "html2canvas.min.js",
-        "lockr.js",
-        "jspdf.min.js",
-        "jquery.tabletojson.js",
-        "xdLocalStorage.min.js",
-        "xdLocalStorageCallback.js",
-        "xdLocalStoragePostMessageApi.min.js",
-        "options.html",
-        "jquery.binarytransport.js"
+        "global-scripts/jspdf.js",
+        "global-css/custom.css",
+        "global-scripts/download.js",
+        "global-scripts/jquery-2.2.0.min.js",
+        "global-scripts/html2canvas.min.js",
+        "global-scripts/jspdf.min.js",
+        "global-scripts/jquery.tabletojson.js",
+        "popup/options.html",
+        "global-scripts/jquery.binarytransport.js",
+        "global-scripts/luckyducky.js"
 
     ]
 }
