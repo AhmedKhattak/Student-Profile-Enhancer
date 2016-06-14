@@ -39,6 +39,19 @@
 
 
 
+try {
+    if (document.URL == "http://111.68.99.8/StudentProfile/Home.aspx") {
+        console.log(document.URL);
+        chrome.runtime.sendMessage('Loggedin');
+    }
+
+} catch (ex) {
+    console.log(ex);
+
+}
+
+
+
 
 
 
