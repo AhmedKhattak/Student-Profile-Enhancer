@@ -14,12 +14,13 @@ body {
 }
 .separator {
   width: 100%;
-  border-top: 2px groove white;
-  margin: 5px -5px 5px -3px;
+  border-top: 2px groove black;
 }
 .menu-entry {
   padding: 2px;
   cursor: pointer;
+  height: 20px;
+  font-size: 14px;
 }
 .menu-entry:hover {
   -webkit-transition: all 0.3s ease-out;
@@ -28,6 +29,7 @@ body {
 #titletext {
   position:relative;
   text-align: center;
+  height:61px;
 }
 
 .img1 { z-index: 1; } 
@@ -36,7 +38,8 @@ body {
 .header {
   font-weight: bold;
   color: white;
-  float:left; position:absolute; top:20px; right: 20px
+   position:absolute; top:20px; right: 20px;
+  line-height:20px;
 }
 a {
   color: #4D7BD6;
